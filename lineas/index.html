@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Líneas - Colectucus</title>
+    
+    <meta name="description" content="Buscador de líneas de colectivos en Tucumán. Encuentra recorridos, carteles y empresas.">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#2563eb">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Reset & Variables (Mantenidas del original) --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --bg-sidebar: rgba(255, 255, 255, 0.95);
+            --bg-header: rgba(255, 255, 255, 0.8);
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary: #8b5cf6;
+            --border: #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --bg-sidebar: rgba(15, 23, 42, 0.95);
+            --bg-header: rgba(15, 23, 42, 0.8);
+            --text-main: #f3f4f6;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #60a5fa;
+            --border: #334155;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Header & Glassmorphism --- */
+        header {
+            background: var(--bg-header);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.8rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+
+        .menu-toggle { background: transparent; border: 1px solid transparent; cursor: pointer; display: flex; align-items: center; gap: 0.8rem; padding: 0.5rem; border-radius: 8px; transition: var(--transition); }
+        .menu-toggle:hover { background: rgba(128, 128, 128, 0.1); }
+        .hamburger { position: relative; width: 24px; height: 18px; display: flex; flex-direction: column; justify-content: space-between; }
+        .hamburger span { display: block; width: 100%; height: 2px; background: var(--text-main); border-radius: 2px; transition: transform 0.3s ease, opacity 0.3s ease; transform-origin: left; }
+        .menu-toggle.active .hamburger span:nth-child(1) { transform: rotate(45deg) translate(2px, -2px); }
+        .menu-toggle.active .hamburger span:nth-child(2) { opacity: 0; }
+        .menu-toggle.active .hamburger span:nth-child(3) { transform: rotate(-45deg) translate(2px, 2px); }
+        .menu-initials { font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
+
+        /* --- Sidebar & Overlay --- */
+        .sidebar { position: fixed; left: -320px; top: 0; width: 300px; height: 100vh; background: var(--bg-sidebar); backdrop-filter: blur(10px); border-right: 1px solid var(--border); box-shadow: var(--shadow-lg); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 200; padding-top: 1rem; }
+        .sidebar.active { transform: translateX(320px); }
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid var(--border); text-align: center; }
+        .nav-link { display: flex; align-items: center; gap: 12px; padding: 1rem 1.5rem; color: var(--text-main); text-decoration: none; font-weight: 500; transition: var(--transition); border-left: 4px solid transparent; }
+        .nav-link:hover { background: rgba(37, 99, 235, 0.05); color: var(--primary); }
+        .nav-item.active .nav-link { background: rgba(37, 99, 235, 0.1); color: var(--primary); border-left-color: var(--primary); }
+        
+        .overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(2px); opacity: 0; visibility: hidden; transition: var(--transition); z-index: 150; }
+        .overlay.active { opacity: 1; visibility: visible; }
+
+        .theme-toggle { background: transparent; border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 50px; cursor: pointer; display: flex; align-items: center; gap: 0.6rem; color: var(--text-main); font-size: 0.9rem; font-weight: 500; transition: var(--transition); }
+        .theme-toggle:hover { border-color: var(--primary); background: rgba(37, 99, 235, 0.05); color: var(--primary); }
+
+        .logo-main { font-size: 2.5rem; font-weight: 900; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; flex-grow: 1; width: 100%; }
+
+        /* --- Buscador y Controles --- */
+        .search-section {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input-wrapper input {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            padding-left: 3rem;
+            font-size: 1.1rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg-body);
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+
+        .search-input-wrapper input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        .controls-grid {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        select {
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-size: 0.95rem;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* Checkboxes para filtro por tipo */
+        .type-filters {
+            display: none;
+            gap: 1rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--border);
+        }
+
+        .type-filters.visible {
+            display: flex;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        /* --- Lista de Colectivos --- */
+        .results-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .group-header {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-top: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .bus-card {
+            display: flex;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .bus-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .bus-icon {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            image-rendering: pixelated; /* Ideal para pixel art */
+            margin-right: 1.5rem;
+            background: var(--bg-body);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .bus-info {
+            flex-grow: 1;
+        }
+
+        .bus-title-row {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .bus-name {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .bus-cartel {
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+
+        .bus-empresa {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+            font-weight: 600;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* --- Footer --- */
+        footer { text-align: center; padding: 2rem 1.5rem; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--border); background: var(--bg-card); margin-top: auto; }
+
+        @media (max-width: 768px) {
+            .controls-grid { flex-direction: column; align-items: stretch; }
+            .type-filters { border-left: none; padding-left: 0; padding-top: 1rem; border-top: 2px solid var(--border); flex-wrap: wrap; }
+            .bus-title-row { flex-direction: column; gap: 0.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay" id="overlay" onclick="toggleMenu()" aria-hidden="true"></div>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-main" style="font-size: 1.8rem;">Colectucus</div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Wiki Tucumana</p>
+        </div>
+        <ul style="list-style: none; padding: 1rem 0;">
+            <li class="nav-item">
+                <a href="https://mmmanda.github.io/colectucus/" class="nav-link"><span>🏠</span> Principal</a>
+            </li>
+            <li class="nav-item active">
+                <a href="https://mmmanda.github.io/colectucus/lineas/" class="nav-link"><span>🚌</span> Líneas</a>
+            </li>
+            <li class="nav-item">
+                <a href="https://mmmanda.github.io/colectucus/empresas/" class="nav-link"><span>🏢</span> Empresas</a>
+            </li>
+            <li class="nav-item">
+                <a href="https://mmmanda.github.io/colectucus/inter/" class="nav-link"><span>🗺️</span> Interurbanos</a>
+            </li>
+            <li class="nav-item">
+                <a href="https://mmmanda.github.io/colectucus/asistente/" class="nav-link"><span>🤖</span> Asistente IA</a>
+            </li>
+        </ul>
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <div class="header-left">
+                <button class="menu-toggle" id="menuBtn" onclick="toggleMenu()" aria-label="Abrir menú">
+                    <div class="hamburger"><span></span><span></span><span></span></div>
+                    <span class="menu-initials">CT</span>
+                </button>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema">
+                <span id="themeIcon">🌙</span>
+                <span id="themeText">Oscuro</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 class="logo-main" style="font-size: 2.2rem;">Buscador de Líneas</h1>
+            <p style="color: var(--text-muted);">Encuentra tu colectivo por nombre, cartel o empresa</p>
+        </div>
+
+        <section class="search-section">
+            <div class="search-input-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Ej: Linea 100, Yerba Buena, El Galgo...">
+            </div>
+
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label for="groupBySelect" style="font-weight: 600; font-size: 0.9rem;">Agrupar por:</label>
+                    <select id="groupBySelect">
+                        <option value="none">Sin agrupación</option>
+                        <option value="empresa">Por empresa</option>
+                        <option value="tipo">Por tipo de servicio</option>
+                    </select>
+                </div>
+
+                <div class="type-filters" id="typeFilters">
+                    <label class="checkbox-label"><input type="checkbox" value="Urbano" class="type-cb" checked> Urbano</label>
+                    <label class="checkbox-label"><input type="checkbox" value="Interurbano" class="type-cb" checked> Interurbano</label>
+                    <label class="checkbox-label"><input type="checkbox" value="Rural" class="type-cb" checked> Rural</label>
+                </div>
+            </div>
+        </section>
+
+        <div class="results-container" id="resultsContainer">
+            </div>
+
+    </main>
+
+    <footer>
+        <p> MmManda's Colectucus | Proyecto Fan-Made | Sin Copyright :D</p>
+        <p style="margin-top: 0.5rem; opacity: 0.7;">Potenciado por Gemini 3 & Claude Sonnet</p>
+    </footer>
+
+    <script>
+        // --- Datos de las Líneas ---
+        const rawData = [
+            "Linea 1 | Avenida Francisco de Aguirre Barrio Policial II, Villa Amalia, Hiper Libertad | El Galgo S.R.L",
+            "Linea 3 | San Ramón, Presidente Perón, | Transporte Yerba Buena U.T.E",
+            "Linea 4 | El Corcel | El Corcel S.A U.T.E",
+            "Linea 5 | Cementerio Del Norte, Barrio Oeste | Transportes Asociados U.T.E",
+            "Linea 6 | Barrio Hipólito Yrigoyen, Barro Oeste II | Puesto Nuevo U.T.E",
+            "Linea 7 | Barrio Keneddy, El Colmenar | El Ceibo S.R.L",
+            "Linea 8 | Villa Muñecas, Plazoleta Mitre, Bajo, Estación Terminal, San Cayetano | El Rayo Bus U.T.E",
+            "Linea 9 | Villa Muñecas, Plazoleta Mitre, Universidad Hospitales | General Belgrano S.R.L",
+            "Linea 10 | Barrio Elena White, Terminal Nueva, Barrio San Cayetano, Villa Amalia | Leagas S.A",
+            "Linea 11 | Manantial Sur, San Ramón, 11 de Marzo, Villa Angelina | BYV Transportes U.T.E",
+            "Linea 12 | Ciudadela, Villa Urquiza, Barrio Municipal, SMATA | Cerro Pozo U.T.E",
+            "Linea 17 | Barrio Terán, Barrio Obispo Piedrabuena, Barrio Ejercito Argentino, Estación Terminal | El Condor S.R.L",
+            "Linea 18 | Universidad, Terminal de Ómnibus | BSV Logística S.A",
+            "Linea 19 | Hiper Libertad, Terminal Nueva, | BYV Transportes U.T.E",
+            "Linea 100 | Yerba Buena | El Ceibo S.R.L",
+            "Linea 101 | Villa Mariano Moreno, Barrio Gráfico II, Barrio Los Pocitos, Avenida Francisco de Aguirre, Plaza Independencia| El Galgo S.R.L",
+            "Linea 102 | El Corcel | El Corcel S.A U.T.E",
+            "Linea 103 | El Colmenar, El Manantial, Experimental | Cerro Pozo U.T.E",
+            "Linea 105 | Rotonda, Yerba Buena, Las Talitas, Avenida Perón | Transportes Asociados U.T.E",
+            "Linea 106 | Tafí Viejo, Estación Terminal | Puesto Nuevo U.T.E",
+            "Linea 107 | Las Talitas | El Ceibo S.R.L",
+            "Linea 109 | Lomas de Tafí, Universidad, Facultad de Agronomía, Estación Terminal | General Belgrano S.R.L",
+            "Linea 110 | Manantial, Nueva Terminal, Centro | Leagas S.A",
+            "Linea 118 | Yerba Buena, Nueva Terminal, Centro, San Javier| La Nueva Fournier S.R.L",
+            "Linea 121 | Facultades, Centro, Nueva Terminal, Alderetes, Banda, Hospital | T.A. Ciudad de Alderetes S.R.L.",
+            "Linea 122 | Alderetes, Facultad, Centro, Nueva Terminal, Banda | La Nueva Fournier S.R.L",
+            "Linea 123 | Villa Lastenia, Centro |El Tandilense S.R.L",
+            "Linea 124 | Alderetes, Los Gutiérrez, por Autopista | T.A. Cruz Alta S.R.L.",
+            "Linea 125 | B Aeropuerto, Terminal, Centro |El Tandilense S.R.L",
+            "Linea 129 | Milagrosa, Centro, Nueva Terminal |El Tandilense S.R.L",
+            "Linea 130 | Tafí Viejo, Nueva Terminal | El Limón S.R.L",
+            "Linea 131 | Tafí viejo, x Diagonal, Barrio Lomas de Tafí | El Rayo Bus U.T.E",
+            "Linea 132 | Villa Mariano Moreno, Los Nogales, Barrio Los Pocitos | El Galgo S.R.L",
+            "Linea 140 | Colombres | T.A Colombres S.R.L U.T.E",
+            "Linea 141 | Los Aguirre, Policial 4, Centro, Nueva Terminal | El Tandilense S.R.L",
+            "Linea 142 | Lomas de Tafí, Nueva Terminal, Centro | Leagas S.A",
+            "Linea 214 | Banda Del Río Salí | El Tandilense S.R.L",
+            "Linea Florida | Ingenio Florida, Las Cejas, Los Ralos, Mayo, Alabama, Posse | Empresa Florida S.R.L",
+            "Linea SPC | El Cadillal, San Pedro de Colalao, Trancas | San Pedro de Colalao U.T.E",
+            "Linea Aconquija | Tafí del Valle | Empresa de Transporte Aconquija S.A",
+            "Linea El Provincial | La Reducción, San Pablo, Rinconada, Lules | SED S.R.L",
+            "Linea TESA | Concepción | Transporte Ejecutivo S.A",
+            "Linea Exprebus | Monteros, La cocha | Empresa del milagro S.R.L",
+            "Linea El Simoqueño | Leales, El Siambon | El Simoqueño S.R.L",
+            "Linea El Tigre | Santa Rosa, San Andrés | T.A El Tigre S.R.L",
+            "Linea Agua Dulce | Ranchillos, Orán | T.A Agua Dulce S.R.L",
+            "Linea BFB | Tafí viejo, Terminal, Rio Nio | Coronel Suárez Servicios S.R.L",
+            "Linea La Costosa | 7 de abril, Garmendia, Piedrabuena | La Costosa S.R.L",
+            "Linea Malebo | Terminal, Burrucayú | La Nueva Fournier S.R.L",
+            "Linea El Aguaray | El timbo | Tradio U.T.E",
+            "Linea Rutas Del Sur | Juan Bautista Alberdi | Rutas Del Sur S.R.L",
+            "Linea Buscor | El Slambón | BUSCOR S.R.L"
+        ];
+
+        // Parsear datos
+        const lines = rawData.map(item => {
+            const parts = item.split('|').map(s => s.trim());
+            const nombreCompleto = parts[0];
+            const cartel = parts[1].replace(/,$/, ''); // Quita coma final por si acaso
+            const empresa = parts[2];
+            
+            const nombreClean = nombreCompleto.replace("Linea ", "");
+            const isNumeric = !isNaN(nombreClean);
+            const num = isNumeric ? parseInt(nombreClean) : null;
+            
+            let tipo = "Rural";
+            if (isNumeric) {
+                tipo = num < 100 ? "Urbano" : "Interurbano";
+            }
+
+            const imgName = nombreClean.replace(/ /g, "_") + ".png";
+            const imgPath = `/archivos/pixelarts/${imgName}`;
+
+            return { nombre: nombreCompleto, cartel, empresa, tipo, imgPath, num, isNumeric };
+        });
+
+        // --- Lógica de Interfaz ---
+        const searchInput = document.getElementById('searchInput');
+        const groupBySelect = document.getElementById('groupBySelect');
+        const typeFiltersContainer = document.getElementById('typeFilters');
+        const typeCheckboxes = document.querySelectorAll('.type-cb');
+        const resultsContainer = document.getElementById('resultsContainer');
+
+        function renderLines() {
+            const query = searchInput.value.toLowerCase();
+            const groupBy = groupBySelect.value;
+            
+            // Mostrar u ocultar filtros por tipo
+            if (groupBy === 'tipo') {
+                typeFiltersContainer.classList.add('visible');
+            } else {
+                typeFiltersContainer.classList.remove('visible');
+            }
+
+            // Obtener tipos activos
+            const activeTypes = Array.from(typeCheckboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            // Filtrar arreglo
+            let filtered = lines.filter(line => {
+                const matchesSearch = line.nombre.toLowerCase().includes(query) || 
+                                      line.cartel.toLowerCase().includes(query) || 
+                                      line.empresa.toLowerCase().includes(query);
+                
+                const matchesType = groupBy !== 'tipo' || activeTypes.includes(line.tipo);
+                
+                return matchesSearch && matchesType;
+            });
+
+            // Ordenamiento por defecto (Numérico-Alfabético)
+            filtered.sort((a, b) => {
+                if (a.isNumeric && b.isNumeric) return a.num - b.num;
+                if (a.isNumeric) return -1;
+                if (b.isNumeric) return 1;
+                return a.nombre.localeCompare(b.nombre);
+            });
+
+            resultsContainer.innerHTML = '';
+
+            if (filtered.length === 0) {
+                resultsContainer.innerHTML = `<div class="no-results">No se encontraron líneas que coincidan con tu búsqueda. 🚌💨</div>`;
+                return;
+            }
+
+            // Renderizado según Agrupación
+            if (groupBy === 'none') {
+                filtered.forEach(line => resultsContainer.appendChild(createCard(line)));
+            } 
+            else if (groupBy === 'empresa') {
+                const grouped = {};
+                filtered.forEach(line => {
+                    if (!grouped[line.empresa]) grouped[line.empresa] = [];
+                    grouped[line.empresa].push(line);
+                });
+
+                Object.keys(grouped).sort().forEach(empresa => {
+                    const header = document.createElement('div');
+                    header.className = 'group-header';
+                    header.textContent = empresa;
+                    resultsContainer.appendChild(header);
+                    
+                    grouped[empresa].forEach(line => resultsContainer.appendChild(createCard(line)));
+                });
+            }
+            else if (groupBy === 'tipo') {
+                const grouped = { "Urbano": [], "Interurbano": [], "Rural": [] };
+                filtered.forEach(line => grouped[line.tipo].push(line));
+
+                ['Urbano', 'Interurbano', 'Rural'].forEach(tipo => {
+                    if (grouped[tipo].length > 0) {
+                        const header = document.createElement('div');
+                        header.className = 'group-header';
+                        header.textContent = `Servicio ${tipo}`;
+                        resultsContainer.appendChild(header);
+                        
+                        grouped[tipo].forEach(line => resultsContainer.appendChild(createCard(line)));
+                    }
+                });
+            }
+        }
+
+        function createCard(line) {
+            const card = document.createElement('div');
+            card.className = 'bus-card';
+            
+            // Si la imagen no carga, mostramos un fallback vacío o dejamos el alt
+            card.innerHTML = `
+                <img src="${line.imgPath}" alt="${line.nombre}" class="bus-icon" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2U1ZTdlYiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjEycHgiIGZvbbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBkeT0iLjNlbSIgZmlsbD0iIzk0YTNiOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+T1BTPC90ZXh0Pjwvc3ZnPg=='">
+                <div class="bus-info">
+                    <div class="bus-title-row">
+                        <span class="bus-name">${line.nombre}</span>
+                        <span class="bus-cartel">${line.cartel}</span>
+                    </div>
+                    <div class="bus-empresa">🏢 ${line.empresa}</div>
+                </div>
+            `;
+            return card;
+        }
+
+        // --- Event Listeners ---
+        searchInput.addEventListener('input', renderLines);
+        groupBySelect.addEventListener('change', renderLines);
+        typeCheckboxes.forEach(cb => cb.addEventListener('change', renderLines));
+
+        // --- Utilidades de Interfaz Originales ---
+        function setTheme(themeName) {
+            document.documentElement.setAttribute('data-theme', themeName);
+            localStorage.setItem('theme', themeName);
+            const isDark = themeName === 'dark';
+            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+            document.getElementById('themeText').textContent = isDark ? 'Claro' : 'Oscuro';
+        }
+
+        function toggleTheme() {
+            const current = localStorage.getItem('theme') || 'light';
+            setTheme(current === 'light' ? 'dark' : 'light');
+        }
+
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const btn = document.getElementById('menuBtn');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            btn.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            setTheme(savedTheme);
+            renderLines(); // Render inicial
+        });
+    </script>
+</body>
+</html>
