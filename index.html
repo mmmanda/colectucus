@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MmManda's Colectucus - Fan Wiki de Colectivos Tucumanos</title>
+    
+    <meta name="description" content="Colectucus: La fan-wiki definitiva de colectivos tucumanos. Información detallada sobre líneas, recorridos y empresas de transporte público en Tucumán.">
+    <meta name="keywords" content="colectivos tucumanos, transporte público tucumán, líneas de colectivos, san miguel de tucumán, colectucus">
+    <meta name="author" content="MmManda">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#2563eb">
+    
+    <meta property="og:title" content="MmManda's Colectucus - Wiki de Transporte">
+    <meta property="og:description" content="Guía completa de líneas y empresas de transporte público de Tucumán.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mmmanda.github.io/colectucus/">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Reset & Variables --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --bg-sidebar: rgba(255, 255, 255, 0.95);
+            --bg-header: rgba(255, 255, 255, 0.8);
+            
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary: #8b5cf6;
+            
+            --border: #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --bg-sidebar: rgba(15, 23, 42, 0.95);
+            --bg-header: rgba(15, 23, 42, 0.8);
+            
+            --text-main: #f3f4f6;
+            --text-muted: #94a3b8;
+            
+            --primary: #3b82f6;
+            --primary-hover: #60a5fa;
+            
+            --border: #334155;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- Header & Glassmorphism --- */
+        header {
+            background: var(--bg-header);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.8rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* --- Botón Menú (Hamburguesa Animada) --- */
+        .menu-toggle {
+            background: transparent;
+            border: 1px solid transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .menu-toggle:hover {
+            background: rgba(128, 128, 128, 0.1);
+        }
+
+        .hamburger {
+            position: relative;
+            width: 24px;
+            height: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background: var(--text-main);
+            border-radius: 2px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            transform-origin: left;
+        }
+
+        /* Estado activo de la hamburguesa */
+        .menu-toggle.active .hamburger span:nth-child(1) {
+            transform: rotate(45deg) translate(2px, -2px);
+        }
+        .menu-toggle.active .hamburger span:nth-child(2) {
+            opacity: 0;
+        }
+        .menu-toggle.active .hamburger span:nth-child(3) {
+            transform: rotate(-45deg) translate(2px, 2px);
+        }
+
+        .menu-initials {
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            position: fixed;
+            left: -320px;
+            top: 0;
+            width: 300px;
+            height: 100vh;
+            background: var(--bg-sidebar);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 200;
+            padding-top: 1rem;
+        }
+
+        .sidebar.active {
+            transform: translateX(320px);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem 1.5rem;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: rgba(37, 99, 235, 0.05);
+            color: var(--primary);
+        }
+
+        .nav-item.active .nav-link {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        /* --- Overlay --- */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 150;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* --- Theme Toggle --- */
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+            color: var(--primary);
+        }
+
+        /* --- Main Content --- */
+        .main-logo {
+            text-align: center;
+            margin: 4rem 0 3rem;
+        }
+
+        .logo-main {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Intro Card */
+        .intro-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .intro-section h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* Grid de Botones */
+        .nav-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .nav-button {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .nav-button:hover::before {
+            opacity: 1;
+        }
+
+        .nav-button-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-button-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .nav-button-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            background: var(--bg-card);
+            margin-top: auto;
+        }
+
+        /* --- Modal --- */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border);
+        }
+
+        .modal.visible .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .modal-button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Responsive Tweaks */
+        @media (max-width: 768px) {
+            .logo-main { font-size: 2.5rem; }
+            .intro-section { padding: 1.5rem; text-align: left; }
+            .nav-buttons { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="modal" id="disclaimerModal">
+        <div class="modal-content">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+            <h2 style="color: var(--primary); margin-bottom: 1rem;">Aviso Importante</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                Esta es una <strong>fan-wiki</strong> no afiliada al gobierno ni a empresas de transporte.
+            </p>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+                Contenido generado con asistencia de IA. Por favor, verifica la información con fuentes oficiales antes de viajar.
+            </p>
+            <button class="modal-button" onclick="acceptDisclaimer()">Entendido y Aceptar</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleMenu()" aria-hidden="true"></div>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-main" style="font-size: 1.8rem;">Colectucus</div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">Wiki Tucumana</p>
+        </div>
+        <ul style="list-style: none; padding: 1rem 0;">
+            <li class="nav-item active">
+                <a href="https://mmmanda.github.io/colectucus/" class="nav-link">
+                    <span>🏠</span> Principal
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="https://mmmanda.github.io/colectucus/lineas/" class="nav-link">
+                    <span>🚌</span> Líneas
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="https://mmmanda.github.io/colectucus/empresas/" class="nav-link">
+                    <span>🏢</span> Empresas
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="https://mmmanda.github.io/colectucus/inter/" class="nav-link">
+                    <span>🗺️</span> Interurbanos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="https://mmmanda.github.io/colectucus/asistente/" class="nav-link">
+                    <span>🤖</span> Asistente IA
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <div class="header-left">
+                <button class="menu-toggle" id="menuBtn" onclick="toggleMenu()" aria-label="Abrir menú">
+                    <div class="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="menu-initials">CT</span>
+                </button>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema">
+                <span id="themeIcon">🌙</span>
+                <span id="themeText">Oscuro</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div class="main-logo">
+            <div style="font-size: 1rem; color: var(--text-muted); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 0.5rem;">MmManda's</div>
+            <div class="logo-main">Colectucus</div>
+        </div>
+
+        <section class="intro-section">
+            <h1>Bienvenido a Colectucus</h1>
+            <p style="color: var(--text-muted); max-width: 800px; margin: 0 auto;">
+                La enciclopedia definitiva del transporte tucumano. Explora recorridos, conoce las empresas y utiliza nuestras herramientas inteligentes para moverte por el Jardín de la República.
+            </p>
+        </section>
+
+        <nav class="nav-buttons">
+            <a href="https://mmmanda.github.io/colectucus/lineas/" class="nav-button">
+                <div class="nav-button-icon">🚌</div>
+                <div class="nav-button-title">Líneas</div>
+                <div class="nav-button-desc">Detalle completo de recorridos y paradas en San Miguel de Tucumán y alrededores.</div>
+            </a>
+            
+            <a href="https://mmmanda.github.io/colectucus/empresas/" class="nav-button">
+                <div class="nav-button-icon">🏢</div>
+                <div class="nav-button-title">Empresas</div>
+                <div class="nav-button-desc">Información y flota de las prestatarias del servicio.</div>
+            </a>
+            
+            <a href="https://mmmanda.github.io/colectucus/inter/" class="nav-button">
+                <div class="nav-button-icon">🗺️</div>
+                <div class="nav-button-title">Interurbanos</div>
+                <div class="nav-button-desc">Conexiones con el interior de la provincia (Tafí Viejo, Yerba Buena, etc).</div>
+            </a>
+            
+            <a href="https://mmmanda.github.io/colectucus/asistente/" class="nav-button">
+                <div class="nav-button-icon">🤖</div>
+                <div class="nav-button-title">Asistente IA</div>
+                <div class="nav-button-desc">Pregunta sobre horarios y combinaciones a nuestra inteligencia artificial.</div>
+            </a>
+        </nav>
+
+    </main>
+
+    <footer>
+        <p> MmManda's Colectucus | Proyecto Fan-Made | Sin Copyright :D</p>
+        <p style="margin-top: 0.5rem; opacity: 0.7;">
+            Potenciado por Gemini 3 & Claude Sonnet
+        </p>
+    </footer>
+
+    <script>
+        // --- Gestión del Tema ---
+        function setTheme(themeName) {
+            document.documentElement.setAttribute('data-theme', themeName);
+            localStorage.setItem('theme', themeName);
+            
+            const isDark = themeName === 'dark';
+            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+            document.getElementById('themeText').textContent = isDark ? 'Claro' : 'Oscuro';
+        }
+
+        function toggleTheme() {
+            const current = localStorage.getItem('theme') || 'light';
+            const next = current === 'light' ? 'dark' : 'light';
+            setTheme(next);
+        }
+
+        // --- Gestión del Menú ---
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const btn = document.getElementById('menuBtn');
+            
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            btn.classList.toggle('active'); // Para animar la hamburguesa
+            
+            // Accesibilidad: prevenir scroll cuando el menú está abierto
+            document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+        }
+
+        // --- Gestión del Disclaimer ---
+        function acceptDisclaimer() {
+            const modal = document.getElementById('disclaimerModal');
+            modal.classList.remove('visible');
+            localStorage.setItem('disclaimerAccepted', 'true');
+        }
+
+        function init() {
+            // Cargar Tema
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            setTheme(savedTheme);
+
+            // Verificar Disclaimer
+            const accepted = localStorage.getItem('disclaimerAccepted');
+            if (!accepted) {
+                // Pequeño delay para que la animación se aprecie
+                setTimeout(() => {
+                    document.getElementById('disclaimerModal').classList.add('visible');
+                }, 500);
+            }
+        }
+
+        // Inicializar al cargar
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
