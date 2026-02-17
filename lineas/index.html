@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* --- Reset & Variables (Mantenidas del original) --- */
+        /* --- Reset & Variables --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
@@ -57,6 +57,19 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+        }
+
+        /* --- Utilidad para SEO / IAs (Oculto visualmente) --- */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
         }
 
         /* --- Header & Glassmorphism --- */
@@ -164,7 +177,6 @@
             outline: none;
         }
 
-        /* Checkboxes para filtro por tipo */
         .type-filters {
             display: none;
             gap: 1rem;
@@ -201,7 +213,8 @@
             border-bottom: 2px solid var(--border);
         }
 
-        .bus-card {
+        /* Se modificó para comportarse bien siendo una etiqueta <a> */
+        a.bus-card {
             display: flex;
             align-items: center;
             background: var(--bg-card);
@@ -210,9 +223,11 @@
             padding: 1rem 1.5rem;
             box-shadow: var(--shadow);
             transition: var(--transition);
+            text-decoration: none;
+            color: inherit;
         }
 
-        .bus-card:hover {
+        a.bus-card:hover {
             transform: translateY(-2px);
             border-color: var(--primary);
             box-shadow: var(--shadow-lg);
@@ -222,7 +237,7 @@
             width: 50px;
             height: 50px;
             object-fit: contain;
-            image-rendering: pixelated; /* Ideal para pixel art */
+            image-rendering: pixelated; 
             margin-right: 1.5rem;
             background: var(--bg-body);
             border-radius: 8px;
@@ -349,6 +364,64 @@
             </div>
         </section>
 
+        <div class="sr-only" aria-hidden="false">
+            <h2>Todas las líneas disponibles</h2>
+            <ul>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/1.html">Linea 1</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/3.html">Linea 3</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/4.html">Linea 4</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/5.html">Linea 5</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/6.html">Linea 6</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/7.html">Linea 7</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/8.html">Linea 8</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/9.html">Linea 9</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/10.html">Linea 10</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/11.html">Linea 11</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/12.html">Linea 12</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/17.html">Linea 17</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/18.html">Linea 18</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/19.html">Linea 19</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/100.html">Linea 100</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/101.html">Linea 101</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/102.html">Linea 102</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/103.html">Linea 103</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/105.html">Linea 105</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/106.html">Linea 106</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/107.html">Linea 107</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/109.html">Linea 109</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/110.html">Linea 110</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/118.html">Linea 118</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/121.html">Linea 121</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/122.html">Linea 122</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/123.html">Linea 123</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/124.html">Linea 124</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/125.html">Linea 125</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/129.html">Linea 129</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/130.html">Linea 130</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/131.html">Linea 131</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/132.html">Linea 132</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/140.html">Linea 140</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/141.html">Linea 141</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/142.html">Linea 142</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/214.html">Linea 214</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/florida.html">Linea Florida</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/spc.html">Linea SPC</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/aconquija.html">Linea Aconquija</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/el_provincial.html">Linea El Provincial</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/tesa.html">Linea TESA</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/exprebus.html">Linea Exprebus</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/el_simoqueño.html">Linea El Simoqueño</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/el_tigre.html">Linea El Tigre</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/agua_dulce.html">Linea Agua Dulce</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/bfb.html">Linea BFB</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/la_costosa.html">Linea La Costosa</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/malebo.html">Linea Malebo</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/el_aguaray.html">Linea El Aguaray</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/rutas_del_sur.html">Linea Rutas Del Sur</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/buscor.html">Linea Buscor</a></li>
+                <li><a href="https://mmmanda.github.io/colectucus/lineas/turismo.html">Linea Turismo</a></li>
+            </ul>
+        </div>
         <div class="results-container" id="resultsContainer">
             </div>
 
@@ -371,7 +444,7 @@
             "Linea 8 | Villa Muñecas, Plazoleta Mitre, Bajo, Estación Terminal, San Cayetano | El Rayo Bus U.T.E",
             "Linea 9 | Villa Muñecas, Plazoleta Mitre, Universidad Hospitales | General Belgrano S.R.L",
             "Linea 10 | Barrio Elena White, Terminal Nueva, Barrio San Cayetano, Villa Amalia | Leagas S.A",
-            "Linea 11 | Manantial Sur, San Ramón, 11 de Marzo, Villa Angelina | Tucumán Bus S.R.L",
+            "Linea 11 | Manantial Sur, San Ramón, 11 de Marzo, Villa Angelina | BYV Transportes U.T.E",
             "Linea 12 | Ciudadela, Villa Urquiza, Barrio Municipal, SMATA | Cerro Pozo U.T.E",
             "Linea 17 | Barrio Terán, Barrio Obispo Piedrabuena, Barrio Ejercito Argentino, Estación Terminal | El Condor S.R.L",
             "Linea 18 | Universidad, Terminal de Ómnibus | BSV Logística S.A",
@@ -414,7 +487,7 @@
             "Linea El Aguaray | El timbo | Tradio U.T.E",
             "Linea Rutas Del Sur | Juan Bautista Alberdi | Rutas Del Sur S.R.L",
             "Linea Buscor | El Slambón | BUSCOR S.R.L",
-            "Linea Turismo | La ciudad que queremos | Ciudad de SMT"
+            "Linea Turismo | La ciudad que queremos | Ciudad de SMT",
         ];
 
         // Parsear datos
@@ -436,6 +509,7 @@
             const imgName = nombreClean.replace(/ /g, "_") + ".png";
             const imgPath = `../archivos/pixelart/${imgName}`;
 
+
             return { nombre: nombreCompleto, cartel, empresa, tipo, imgPath, num, isNumeric };
         });
 
@@ -450,19 +524,16 @@
             const query = searchInput.value.toLowerCase();
             const groupBy = groupBySelect.value;
             
-            // Mostrar u ocultar filtros por tipo
             if (groupBy === 'tipo') {
                 typeFiltersContainer.classList.add('visible');
             } else {
                 typeFiltersContainer.classList.remove('visible');
             }
 
-            // Obtener tipos activos
             const activeTypes = Array.from(typeCheckboxes)
                 .filter(cb => cb.checked)
                 .map(cb => cb.value);
 
-            // Filtrar arreglo
             let filtered = lines.filter(line => {
                 const matchesSearch = line.nombre.toLowerCase().includes(query) || 
                                       line.cartel.toLowerCase().includes(query) || 
@@ -473,7 +544,6 @@
                 return matchesSearch && matchesType;
             });
 
-            // Ordenamiento por defecto (Numérico-Alfabético)
             filtered.sort((a, b) => {
                 if (a.isNumeric && b.isNumeric) return a.num - b.num;
                 if (a.isNumeric) return -1;
@@ -488,7 +558,6 @@
                 return;
             }
 
-            // Renderizado según Agrupación
             if (groupBy === 'none') {
                 filtered.forEach(line => resultsContainer.appendChild(createCard(line)));
             } 
@@ -526,12 +595,17 @@
         }
 
         function createCard(line) {
-            const card = document.createElement('div');
+            // Modificación principal: Se crea un elemento <a> en vez de un <div>
+            const card = document.createElement('a');
+            
+            // Generar el slug de la URL basándonos en el nombre de la línea
+            const nombreParaUrl = line.nombre.replace("Linea ", "").trim().toLowerCase().replace(/ /g, "_");
+            card.href = `https://mmmanda.github.io/colectucus/lineas/${nombreParaUrl}.html`;
+            
             card.className = 'bus-card';
             
-            // Si la imagen no carga, mostramos un fallback vacío o dejamos el alt
             card.innerHTML = `
-                <img src="${line.imgPath}" alt="${line.nombre}" class="bus-icon" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2U1ZTdlYiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjEycHgiIGZvbbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBkeT0iLjNlbSIgZmlsbD0iIzk0YTNiOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+T1BTPC90ZXh0Pjwvc3ZnPg=='">
+                <img src="${line.imgPath}" alt="${line.nombre}" class="bus-icon" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2U1ZTdlYiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjEycHgiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBkeT0iLjNlbSIgZmlsbD0iIzk0YTNiOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+T1BTPC90ZXh0Pjwvc3ZnPg=='">
                 <div class="bus-info">
                     <div class="bus-title-row">
                         <span class="bus-name">${line.nombre}</span>
@@ -548,7 +622,7 @@
         groupBySelect.addEventListener('change', renderLines);
         typeCheckboxes.forEach(cb => cb.addEventListener('change', renderLines));
 
-        // --- Utilidades de Interfaz Originales ---
+        // --- Utilidades ---
         function setTheme(themeName) {
             document.documentElement.setAttribute('data-theme', themeName);
             localStorage.setItem('theme', themeName);
@@ -572,11 +646,10 @@
             document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
         }
 
-        // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme') || 'light';
             setTheme(savedTheme);
-            renderLines(); // Render inicial
+            renderLines(); 
         });
     </script>
 </body>
